@@ -27,19 +27,38 @@ app.get("/", function (req, res) {
     res.render("home");
 });
 
-//Scraper
+//Get articles from db to diplay on client
+app.get("/articles", function(req, res){
+    db.Articles.find({})
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
 
+// Route for grabbing a specific Article by id, populate it with it's note
+app.get("/articles/:id", function(req, res) {
+    db.Articles.findOne({ _id: req.params.id })
+      .populate("note")
+      .then(function(dbArticle) {
+        res.json(dbArticle);
+      })
+      .catch(function(err) {
+        res.json(err);
+      });
+  });
+
+//Scraper
 app.get("/scrape", function(req, res) {
     axios.get("http://www.echojs.com/").then(function(response) {
-      // Then, we load that into cheerio and save it to $ for a shorthand selector
       var $ = cheerio.load(response.data);
   
-      // Now, we grab every h2 within an article tag, and do the following:
       $("article h2").each(function(i, element) {
         // Save an empty result object
         var result = {};
   
-        // Add the text and href of every link, and save them as properties of the result object
         result.title = $(this)
           .children("a")
           .text();
@@ -50,11 +69,9 @@ app.get("/scrape", function(req, res) {
         // Create a new Article using the `result` object built from scraping
         db.Articles.create(result)
           .then(function(dbArticle) {
-            // View the added result in the console
             console.log(dbArticle);
           })
           .catch(function(err) {
-            // If an error occurred, log it
             console.log(err);
           });
       });
