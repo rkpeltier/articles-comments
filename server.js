@@ -6,7 +6,7 @@ var axios = require("axios");
 var cheerio = require("cheerio");
 
 //Require models
-// var db = require("./models");
+var db = require("./models");
 
 
 var PORT = 3000;
@@ -29,36 +29,40 @@ app.get("/", function (req, res) {
 
 //Scraper
 
-app.get("/scraper", function(req, res){
-    // Making a request via axios for `nhl.com`'s homepage
-    axios.get("https://www.nhl.com/").then(function(response) {
-
-    // Load the body of the HTML into cheerio
-    var $ = cheerio.load(response.data);
+app.get("/scrape", function(req, res) {
+    axios.get("http://www.echojs.com/").then(function(response) {
+      // Then, we load that into cheerio and save it to $ for a shorthand selector
+      var $ = cheerio.load(response.data);
   
-    // Empty array to save our scraped data
-    var results = [];
+      // Now, we grab every h2 within an article tag, and do the following:
+      $("article h2").each(function(i, element) {
+        // Save an empty result object
+        var result = {};
   
-    // With cheerio, find each h4-tag with the class "headline-link" and loop through the results
-    $("h4.headline-link").each(function(i, element) {
+        // Add the text and href of every link, and save them as properties of the result object
+        result.title = $(this)
+          .children("a")
+          .text();
+        result.link = $(this)
+          .children("a")
+          .attr("href");
   
-      // Save the text of the h4-tag as "title"
-      var title = $(element).text();
-  
-      // Find the h4 tag's parent a-tag, and save it's href value as "link"
-      var link = $(element).parent().attr("href");
-  
-      // Make an object with data we scraped for this h4 and push it to the results array
-        results.push({
-        title: title,
-        link: link
+        // Create a new Article using the `result` object built from scraping
+        db.Articles.create(result)
+          .then(function(dbArticle) {
+            // View the added result in the console
+            console.log(dbArticle);
+          })
+          .catch(function(err) {
+            // If an error occurred, log it
+            console.log(err);
+          });
       });
-    });
   
-    // After looping through each h4.headline-link, log the results
-    console.log(results);
+      // Send a message to the client
+      res.send("Scrape Complete");
+    });
   });
-});
 
  
 // Start the server
