@@ -1,20 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <title>Articles and Comments</title>
 </head>
+
 <body>
     <div class="jumbotron">
         <h1 class="display-4">Articles and Comments</h1>
         <hr class="my-4">
         <p>An app all about scraping articles, viewing the articles, and then adding the comments.</p>
-        <a id="scrape-button" class="btn btn-primary btn-lg" href="#" role="button">Scrape Articles</a>
-        <a id="view-all-button" class="btn btn-primary btn-lg" href="#" role="button">See All Articles</a>
-        <a id="view-notes-button" class="btn btn-primary btn-lg" href="#" role="button">Go to Your Notes</a>
+        <a id="scrape-button" class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape Articles</a>
+        <a id="view-all-button" class="btn btn-primary btn-lg" href="/articles" role="button">See All Articles</a>
+        <a id="view-notes-button" class="btn btn-primary btn-lg" href="/notes" role="button">Go to Your Notes</a>
     </div>
+    
+    <div class="row">
+        <div class="col s2"></div>
+        <div class ="col s8 left-align">
+            {{#each Articles}}
+                <div class="card-panel">
+                    <h4>{{this.title}}</h4>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
 </body>
+
 </html>

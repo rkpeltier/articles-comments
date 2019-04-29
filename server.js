@@ -15,7 +15,6 @@ var app = express();
 
 //Connect to mongodb
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-
 mongoose.connect(MONGODB_URI);
 
 //Middleware
@@ -40,6 +39,18 @@ app.get("/articles", function(req, res){
 
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/articles/:id", function(req, res) {
+    db.Articles.findOne({ _id: req.params.id })
+      .populate("note")
+      .then(function(dbArticle) {
+        res.json(dbArticle);
+      })
+      .catch(function(err) {
+        res.json(err);
+      });
+  });
+
+// Route for grabbing all notes
+app.get("/note", function(req, res) {
     db.Articles.findOne({ _id: req.params.id })
       .populate("note")
       .then(function(dbArticle) {
