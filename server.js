@@ -94,6 +94,6 @@ app.get("/scrape", function(req, res) {
 
  
 // Start the server
-app.listen(PORT, function() {
-    console.log("App running on port " + PORT + "!");
+app.listen(process.env.PORT || 3000, function(){
+    console.log("App is listening on port 3000");
   });
